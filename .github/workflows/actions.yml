@@ -27,6 +27,7 @@ jobs:
         uses: nuget/setup-nuget@v2
         with:
           nuget-version: '5.x'
+      - run: nuget install secure-file -ExcludeVersion
           
       #- name: Build with Maven
       #  run: mvn -B package --file pom.xml
