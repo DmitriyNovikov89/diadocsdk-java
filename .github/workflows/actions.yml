@@ -17,15 +17,11 @@ jobs:
         with:
           dotnet-version: 6.x
       
-      - name: Push NuGet package
-        run: |
-          dotnet nuget install secure-file -ExcludeVersion
-
-      - uses: actions/setup-java@v4
+      - name: Setup Maven Action
+        uses: s4u/setup-maven-action@< version >
         with:
-          distribution: 'liberica'
-          java-version: '17'
-          cache: 'maven'
+          java-version: 17
+          maven-version: 3.9.8
           
       #- name: Build with Maven
       #  run: mvn -B package --file pom.xml
