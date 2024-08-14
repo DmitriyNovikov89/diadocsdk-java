@@ -3,10 +3,12 @@ on:
   push:
     paths-ignore:
       - "**/*.md"
+env:
+  JCP_FILENAME: jcp-2.0.40450-A
       
 jobs:
-  build_and_test:
-    runs-on: ubuntu-20.04
+  build:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,15 +31,21 @@ jobs:
           nuget-version: '5.x'
           
       - run: nuget install secure-file -ExcludeVersion
-      - run: ./secure-file/tools/secure-file.exe -decrypt jcp-2.0.40450-A.zip.enc -secret ${{ secrets.DIADOC_SIGNING_SECRET }}
+      - run: ./secure-file/tools/secure-file.exe -decrypt ${{ env.JCP_FILENAME }}.zip.enc -secret ${{ secrets.DIADOC_SIGNING_SECRET }}
 
       - name: Extract JCP from ZIP
         uses: ihiroky/extract-action@v1
         with:
-          file_path: ./jcp-2.0.40450-A.zip
+          file_path: ./${{ env.JCP_FILENAME }}.zip
 
-      - run: ls -la
+      - run: mvn install:install-file -Dfile="JCP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCP" -Dversion="2.0.40450-A" -Dpackaging="jar"
+        working-directory: ./${{ env.JCP_FILENAME }}
+      - run: mvn install:install-file -Dfile="asn1rt.jar" -DgroupId="com.objsys.asn1j" -DartifactId="asn1rt" -Dversion="2.0.40450-A" -Dpackaging="jar"
+        working-directory: ./${{ env.JCP_FILENAME }}
+      - run: mvn install:install-file -Dfile="ASN1P.jar" -DgroupId="ru.CryptoPro" -DartifactId="ASN1P" -Dversion="2.0.40450-A" -Dpackaging="jar"
+        working-directory: ./${{ env.JCP_FILENAME }}
+      - run: mvn install:install-file -Dfile="JCryptoP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCryptoP" -Dversion="2.0.40450-A" -Dpackaging="jar"
+        working-directory: ./${{ env.JCP_FILENAME }}
+      
         
           
-      #- name: Build with Maven
-      #  run: mvn -B package --file pom.xml
