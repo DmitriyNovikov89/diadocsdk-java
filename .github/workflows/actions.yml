@@ -4,7 +4,8 @@ on:
     paths-ignore:
       - "**/*.md"
 env:
-  JCP_FILENAME: jcp-2.0.40450-A
+  JCP_VERSION: 2.0.40450-A
+  JCP_FILENAME: jcp-${{ env.JCP_VERSION }}
       
 jobs:
   build:
@@ -38,13 +39,13 @@ jobs:
         with:
           file_path: ./${{ env.JCP_FILENAME }}.zip
 
-      - run: mvn install:install-file -Dfile="JCP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCP" -Dversion="2.0.40450-A" -Dpackaging="jar"
+      - run: mvn install:install-file -Dfile="JCP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCP" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
         working-directory: ./${{ env.JCP_FILENAME }}
-      - run: mvn install:install-file -Dfile="asn1rt.jar" -DgroupId="com.objsys.asn1j" -DartifactId="asn1rt" -Dversion="2.0.40450-A" -Dpackaging="jar"
+      - run: mvn install:install-file -Dfile="asn1rt.jar" -DgroupId="com.objsys.asn1j" -DartifactId="asn1rt" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
         working-directory: ./${{ env.JCP_FILENAME }}
-      - run: mvn install:install-file -Dfile="ASN1P.jar" -DgroupId="ru.CryptoPro" -DartifactId="ASN1P" -Dversion="2.0.40450-A" -Dpackaging="jar"
+      - run: mvn install:install-file -Dfile="ASN1P.jar" -DgroupId="ru.CryptoPro" -DartifactId="ASN1P" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
         working-directory: ./${{ env.JCP_FILENAME }}
-      - run: mvn install:install-file -Dfile="JCryptoP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCryptoP" -Dversion="2.0.40450-A" -Dpackaging="jar"
+      - run: mvn install:install-file -Dfile="JCryptoP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCryptoP" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
         working-directory: ./${{ env.JCP_FILENAME }}
       
       - name: Run the build script
