@@ -28,7 +28,7 @@ jobs:
         with:
           nuget-version: '5.x'
       - run: nuget install secure-file -ExcludeVersion
-      - run: ls -la
+      - run: ls -la ./secure-file
       - run: secure-file/tools/secure-file -decrypt jcp-2.0.40450-A.zip.enc -secret ${{ secrets.DIADOC_SIGNING_SECRET }}
         
           
