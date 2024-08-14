@@ -40,13 +40,13 @@ jobs:
           file_path: ./${{ env.JCP_FILENAME_PREFIX }}${{ env.JCP_VERSION }}.zip
 
       - run: mvn install:install-file -Dfile="JCP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCP" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
-        working-directory: ./${{ env.JCP_FILENAME }}
+        working-directory: ./${{ env.JCP_FILENAME_PREFIX }}${{ env.JCP_VERSION }}
       - run: mvn install:install-file -Dfile="asn1rt.jar" -DgroupId="com.objsys.asn1j" -DartifactId="asn1rt" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
-        working-directory: ./${{ env.JCP_FILENAME }}
+        working-directory: ./${{ env.JCP_FILENAME_PREFIX }}${{ env.JCP_VERSION }}
       - run: mvn install:install-file -Dfile="ASN1P.jar" -DgroupId="ru.CryptoPro" -DartifactId="ASN1P" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
-        working-directory: ./${{ env.JCP_FILENAME }}
+        working-directory: ./${{ env.JCP_FILENAME_PREFIX }}${{ env.JCP_VERSION }}
       - run: mvn install:install-file -Dfile="JCryptoP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCryptoP" -Dversion="${{ env.JCP_VERSION }}" -Dpackaging="jar"
-        working-directory: ./${{ env.JCP_FILENAME }}
+        working-directory: ./${{ env.JCP_FILENAME_PREFIX }}${{ env.JCP_VERSION }}
       
       - name: Run the build script
         uses: cake-build/cake-action@v2
