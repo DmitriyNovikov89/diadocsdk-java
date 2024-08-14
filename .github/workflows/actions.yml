@@ -5,7 +5,7 @@ on:
       - "**/*.md"
 env:
   JCP_VERSION: 2.0.40450-A
-  JCP_FILENAME: jcp-${{ env.JCP_VERSION }}
+  JCP_FILENAME_PREFIX: jcp-
       
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
           nuget-version: '5.x'
           
       - run: nuget install secure-file -ExcludeVersion
-      - run: ./secure-file/tools/secure-file.exe -decrypt ${{ env.JCP_FILENAME }}.zip.enc -secret ${{ secrets.DIADOC_SIGNING_SECRET }}
+      - run: ./secure-file/tools/secure-file.exe -decrypt ${{ env.JCP_FILENAME_PREFIX }}${{ env.JCP_VERSION }}.zip.enc -secret ${{ secrets.DIADOC_SIGNING_SECRET }}
 
       - name: Extract JCP from ZIP
         uses: ihiroky/extract-action@v1
