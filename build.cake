@@ -102,27 +102,11 @@ Task("Package-With-Maven")
 			throw new Exception("mvn package exit code = " + exitCode);
 	});
 
-Task("PublishArtifactsToAppVeyor")
-	.IsDependentOn("Package-With-Maven")
-	.WithCriteria(x => BuildSystem.IsRunningOnAppVeyor)
-	.Does(() =>
-	{
-		var jarFiles = GetFiles(buildDir.FullPath + "/*.jar");
-		foreach (var jar in jarFiles)
-		{
-			AppVeyor.UploadArtifact(jar);
-		}
-	});
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
 
-Task("Default")
-	.IsDependentOn("AppVeyor");
-
-Task("AppVeyor")
-	.IsDependentOn("PublishArtifactsToAppVeyor");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
@@ -187,12 +171,13 @@ public void CompileProtoFiles(IEnumerable<FilePath> files, DirectoryPath sourceP
 public string GetVersionFromTag()
 {
 	var lastestTag = "";
-	if (BuildSystem.IsRunningOnAppVeyor)
+
+	if (BuildSystem.GitHubActions.IsRunningOnGitHubActions)
 	{
-		var tag = BuildSystem.AppVeyor.Environment.Repository.Tag;
-		if (tag.IsTag)
+		var workflow = BuildSystem.GitHubActions.Environment.Workflow;
+		if(EnvironmentVariable("github_ref_type") == "tag")
 		{
-			return tag.Name;
+			return workflow.Ref.Replace("refs/tags/", "");
 		}
 	}
 
@@ -200,14 +185,15 @@ public string GetVersionFromTag()
 	{
 		try
 		{
-			return GitDescribe(".", false, GitDescribeStrategy.Tags);
+			lastestTag = GitDescribe(".", false, GitDescribeStrategy.Tags);
 		}
 		catch (Exception ex)
 		{
 			Warning(ex.Message, new object[] {});
 		}
 	}
-	return null;
+
+	return lastestTag;
 }
 
 public static string ClearVersionTag(string lastestTag)
@@ -228,32 +214,20 @@ public static string ClearVersionTag(string lastestTag)
 
 public string GetSemanticVersionV2(string clearVersion)
 {
-	if (BuildSystem.IsRunningOnAppVeyor)
+	if (BuildSystem.GitHubActions.IsRunningOnGitHubActions)
 	{
-		var tag = BuildSystem.AppVeyor.Environment.Repository.Tag;
-		if (tag.IsTag)
+		var workflow = BuildSystem.GitHubActions.Environment.Workflow;
+		if(EnvironmentVariable("github_ref_type") == "tag")
 		{
 			return clearVersion;
 		}
-
-		return GetAppVeyorBuildVersion(clearVersion);
+		
+		var buildNumber = workflow.RunNumber;
+		return $"{clearVersion}-CI{buildNumber}";
 	}
 
 	var currentDate = DateTime.Now;
 	var daysPart = (currentDate - new DateTime(2010, 01, 01)).Days;
 	var secondsPart = Math.Floor((currentDate - currentDate.Date).TotalSeconds/2);
 	return string.Format("{0}-dev.{1}.{2}", clearVersion, daysPart, secondsPart);
-}
-
-public string GetAppVeyorBuildVersion(string clearVersion)
-{
-	if (BuildSystem.IsRunningOnAppVeyor)
-	{
-		var buildNumber = BuildSystem.AppVeyor.Environment.Build.Number;
-		clearVersion += string.Format("-CI.{0}", buildNumber);
-		return (AppVeyor.Environment.PullRequest.IsPullRequest
-			? clearVersion += string.Format("-PR.{0}", AppVeyor.Environment.PullRequest.Number)
-			: clearVersion += "-" + AppVeyor.Environment.Repository.Branch);
-	}
-	return clearVersion;
 }
