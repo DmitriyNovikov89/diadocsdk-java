@@ -58,13 +58,11 @@ Task("Generate-Version-Info")
 	{
 		var clearVersion = ClearVersionTag(GetVersionFromTag()) ?? "1.0.0";
 		var semanticVersion = GetSemanticVersionV2(clearVersion);
-		var appveyorVersion = GetAppVeyorBuildVersion(clearVersion);
 
 		if (!string.IsNullOrEmpty(clearVersion))
 		{
 			Information("Version from tag: {0}", clearVersion);
 			Information("Semantic version: {0}", semanticVersion);
-			Information("AppVeyor version: {0}", appveyorVersion);
 		}
 
 		var xmlPokeSettings = new XmlPokeSettings
