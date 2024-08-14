@@ -10,7 +10,7 @@ var protocLink = "https://github.com/google/protobuf/releases/download/v2.6.1/pr
 var protocArchive = buildDir.CombineWithFilePath("protoc-2.6.1-win32.zip");
 var protocBinDir = buildDir.Combine("protoc");
 var protocExe = protocBinDir.CombineWithFilePath("protoc.exe");
-var mvnTool = new [] { "mvn.cmd", "mvn.exe" }.Select(x => Context.Tools.Resolve(x)).Where(x => x != null).FirstOrDefault();
+var mvnTool = new [] { "mvn", "mvn.exe" }.Select(x => Context.Tools.Resolve(x)).Where(x => x != null).FirstOrDefault();
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
