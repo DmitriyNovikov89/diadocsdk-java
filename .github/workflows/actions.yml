@@ -47,5 +47,13 @@ jobs:
       - run: mvn install:install-file -Dfile="JCryptoP.jar" -DgroupId="ru.CryptoPro" -DartifactId="JCryptoP" -Dversion="2.0.40450-A" -Dpackaging="jar"
         working-directory: ./${{ env.JCP_FILENAME }}
       
-        
-          
+      - name: Run the build script
+        uses: cake-build/cake-action@v2
+        env:
+          github_ref_type: ${{ github.ref_type }}
+        with:
+          target: Default
+          arguments: |
+            configuration: Release
+          verbosity: Diagnostic
+          cake-version: 1.3.0
