@@ -73,10 +73,6 @@ Task("Generate-Version-Info")
 		};
 		XmlPoke(new FilePath("./pom.xml"), "/mvn:project/mvn:version", semanticVersion, xmlPokeSettings);
 
-		if (BuildSystem.IsRunningOnAppVeyor)
-		{
-			AppVeyor.UpdateBuildVersion(appveyorVersion);
-		}
 	});
 
 Task("Check-Maven-Installed")
